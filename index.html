@@ -126,6 +126,25 @@
   }
   footer { margin-top: 40px; font-size: 14px; color: var(--muted); text-align: center; }
   footer.all-done { font-size: 20px; font-weight: 600; color: var(--done); }
+  .peeker {
+    position: fixed; z-index: 5; width: clamp(64px, 9vw, 120px); cursor: pointer;
+    transition: transform .7s cubic-bezier(.3,1.5,.5,1);
+  }
+  .peeker.left { left: 0; transform: translateX(-100%); }
+  .peeker.right { right: 0; transform: translateX(100%); }
+  .peeker.left.out { transform: translateX(-42%) rotate(8deg); }
+  .peeker.right.out { transform: translateX(42%) rotate(-8deg); }
+  .peeker.duck { transition-duration: .2s; transition-timing-function: ease-in; }
+  .peeker.right svg { transform: scaleX(-1); }
+  .peeker svg { display: block; overflow: visible; }
+  .peeker .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4s infinite; }
+  .peeker:nth-of-type(2) .eyes { animation-delay: 1.3s; }
+  .peeker:nth-of-type(3) .eyes { animation-delay: 2.6s; }
+  @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+  @media (prefers-reduced-motion: reduce) {
+    .peeker { transition: none; }
+    .peeker .eyes { animation: none; }
+  }
 </style>
 <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -197,6 +216,45 @@
 
   <footer class="reveal" id="footer">See you in class!</footer>
 </main>
+<div class="peeker left" style="top: 28%" aria-hidden="true">
+  <svg viewBox="0 0 100 110">
+    <path d="M20 16 q6 -14 14 -2" stroke="#e0825f" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="60" rx="52" ry="48" fill="#e0825f"/>
+    <ellipse cx="30" cy="92" rx="40" ry="14" fill="#8a3f23" opacity=".35"/>
+    <ellipse cx="72" cy="86" rx="10" ry="8" fill="#e0825f" stroke="#8a3f23" stroke-width="2"/>
+    <g class="eyes">
+      <ellipse cx="46" cy="50" rx="10" ry="12" fill="#fff"/><ellipse cx="68" cy="50" rx="9" ry="11" fill="#fff"/>
+      <circle class="pupil" cx="46" cy="50" r="5" fill="#161513"/><circle class="pupil" cx="68" cy="50" r="4.5" fill="#161513"/>
+    </g>
+    <ellipse cx="40" cy="68" rx="6" ry="3.5" fill="#ff8fa3" opacity=".6"/><ellipse cx="76" cy="66" rx="5" ry="3" fill="#ff8fa3" opacity=".6"/>
+    <path d="M52 70 q6 6 12 0" stroke="#161513" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+<div class="peeker right" style="top: 55%" aria-hidden="true">
+  <svg viewBox="0 0 100 110">
+    <circle cx="34" cy="8" r="6" fill="#f5c36b"/><path d="M34 14 v6" stroke="#5cbf8c" stroke-width="4"/><ellipse cx="30" cy="60" rx="52" ry="48" fill="#5cbf8c"/>
+    <ellipse cx="30" cy="92" rx="40" ry="14" fill="#23603f" opacity=".35"/>
+    <ellipse cx="72" cy="86" rx="10" ry="8" fill="#5cbf8c" stroke="#23603f" stroke-width="2"/>
+    <g class="eyes">
+      <ellipse cx="46" cy="50" rx="10" ry="12" fill="#fff"/><ellipse cx="68" cy="50" rx="9" ry="11" fill="#fff"/>
+      <circle class="pupil" cx="46" cy="50" r="5" fill="#161513"/><circle class="pupil" cx="68" cy="50" r="4.5" fill="#161513"/>
+    </g>
+    <ellipse cx="40" cy="68" rx="6" ry="3.5" fill="#ff8fa3" opacity=".6"/><ellipse cx="76" cy="66" rx="5" ry="3" fill="#ff8fa3" opacity=".6"/>
+    <path d="M52 70 q6 6 12 0" stroke="#161513" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+<div class="peeker left" style="top: 78%" aria-hidden="true">
+  <svg viewBox="0 0 100 110">
+    <path d="M4 18 l8 -14 l8 14 M20 16 l8 -14 l8 14" fill="#f5c36b"/><ellipse cx="30" cy="60" rx="52" ry="48" fill="#f5c36b"/>
+    <ellipse cx="30" cy="92" rx="40" ry="14" fill="#8a6420" opacity=".35"/>
+    <ellipse cx="72" cy="86" rx="10" ry="8" fill="#f5c36b" stroke="#8a6420" stroke-width="2"/>
+    <g class="eyes">
+      <ellipse cx="46" cy="50" rx="10" ry="12" fill="#fff"/><ellipse cx="68" cy="50" rx="9" ry="11" fill="#fff"/>
+      <circle class="pupil" cx="46" cy="50" r="5" fill="#161513"/><circle class="pupil" cx="68" cy="50" r="4.5" fill="#161513"/>
+    </g>
+    <ellipse cx="40" cy="68" rx="6" ry="3.5" fill="#ff8fa3" opacity=".6"/><ellipse cx="76" cy="66" rx="5" ry="3" fill="#ff8fa3" opacity=".6"/>
+    <path d="M52 70 q6 6 12 0" stroke="#161513" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.js"></script>
 <script>
   const io = new IntersectionObserver(entries => entries.forEach(e => {
@@ -208,6 +266,35 @@
     li.style.setProperty('--x', `${e.clientX - r.left}px`);
     li.style.setProperty('--y', `${e.clientY - r.top}px`);
   }));
+  const peekers = [...document.querySelectorAll('.peeker')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const rand = (a, b) => a + Math.random() * (b - a);
+  peekers.forEach(async (p, i) => {
+    if (reduce) { p.classList.add('out'); return; }
+    await wait(1500 + i * 2200);
+    while (true) {
+      p.classList.remove('duck'); p.classList.add('out');
+      await wait(rand(2500, 4500));
+      p.classList.remove('out');
+      await wait(rand(4000, 9000));
+    }
+  });
+  peekers.forEach(p => p.addEventListener('click', () => { p.classList.add('duck'); p.classList.remove('out'); }));
+  let pointer = { x: innerWidth / 2, y: innerHeight / 2 };
+  addEventListener('pointermove', e => { pointer = { x: e.clientX, y: e.clientY }; lookAt(); }, { passive: true });
+  addEventListener('scroll', () => lookAt(), { passive: true });
+  function lookAt() {
+    peekers.forEach(p => {
+      const flip = p.classList.contains('right') ? -1 : 1;
+      p.querySelectorAll('.pupil').forEach(el => {
+        const r = el.getBoundingClientRect();
+        const a = Math.atan2(pointer.y - (r.top + r.height / 2), pointer.x - (r.left + r.width / 2));
+        el.setAttribute('transform', `translate(${Math.cos(a) * 3.5 * flip} ${Math.sin(a) * 3.5})`);
+      });
+    });
+  }
+  lookAt();
   const cheers = ["Let's go! 🚀", 'Nice start! 🙌', 'Keep it up! 💪', 'Over halfway! 🔥', 'One more to go! 👀', "All done! You're ready 🎉"];
   const colors = ['#e0825f', '#5cbf8c', '#f1eee7', '#f5c36b'];
   const fire = opts => window.confetti && confetti({ disableForReducedMotion: true, colors, ...opts });
