@@ -180,7 +180,7 @@
   </div>
 
   <div class="progress reveal">
-    <div class="progress-label" id="progress-label">0 of 5 done</div>
+    <div class="progress-label" id="progress-label">0 of 6 done</div>
     <div class="bar"><span id="progress-bar"></span></div>
   </div>
 
@@ -207,22 +207,29 @@
     <li class="reveal">
       <input type="checkbox" id="step3" aria-label="Mark step 3 done">
       <div>
-        <h2>3. <span class="emoji">🐙</span> Create a GitHub account</h2>
-        <a class="btn" href="https://github.com/" target="_blank" rel="noopener">Go to GitHub →</a>
+        <h2>3. <span class="emoji">🎨</span> Set up the Claude app and try Claude Design</h2>
+        <p>Open the Claude app, sign in, and finish any setup steps it asks for. Then open Claude Design and try making something small to make sure everything works.</p>
       </div>
     </li>
     <li class="reveal">
       <input type="checkbox" id="step4" aria-label="Mark step 4 done">
       <div>
-        <h2>4. <span class="emoji">🚀</span> Create a Vercel account</h2>
-        <div class="note"><strong>Important: sign up with "Continue with GitHub."</strong> Using the GitHub account you just made links the two together, which makes putting your projects online a lot easier later.</div>
-        <a class="btn" href="https://vercel.com/" target="_blank" rel="noopener">Go to Vercel →</a>
+        <h2>4. <span class="emoji">🐙</span> Create a GitHub account</h2>
+        <a class="btn" href="https://github.com/" target="_blank" rel="noopener">Go to GitHub →</a>
       </div>
     </li>
     <li class="reveal">
       <input type="checkbox" id="step5" aria-label="Mark step 5 done">
       <div>
-        <h2>5. <span class="emoji">✨</span> Experiment with Lovable <span class="tag">About 25 minutes</span></h2>
+        <h2>5. <span class="emoji">🚀</span> Create a Vercel account</h2>
+        <div class="note"><strong>Important: sign up with "Continue with GitHub."</strong> Using the GitHub account you just made links the two together, which makes putting your projects online a lot easier later.</div>
+        <a class="btn" href="https://vercel.com/" target="_blank" rel="noopener">Go to Vercel →</a>
+      </div>
+    </li>
+    <li class="reveal">
+      <input type="checkbox" id="step6" aria-label="Mark step 6 done">
+      <div>
+        <h2>6. <span class="emoji">✨</span> Experiment with Lovable <span class="tag">About 25 minutes</span></h2>
         <p>This isn't meant to be an assignment. It's meant to be a fun way to see the power of vibe coding: you describe what you want in plain English, and Lovable builds it for you. Spend some real time here. Try building a small website or app, whatever sparks your curiosity, and see what it can do.</p>
         <a class="btn" href="https://lovable.dev/dashboard" target="_blank" rel="noopener">Open Lovable →</a>
       </div>
@@ -328,7 +335,7 @@
     });
   }
   lookAt();
-  const cheers = ["Let's go! 🚀", 'Nice start! 🙌', 'Keep it up! 💪', 'Over halfway! 🔥', 'One more to go! 👀', "All done! You're ready 🎉"];
+  const cheers = ["Let's go! 🚀", 'Nice start! 🙌', 'Keep it up! 💪', 'Halfway there! ⚡', 'Over halfway! 🔥', 'One more to go! 👀', "All done! You're ready 🎉"];
   const colors = ['#e0825f', '#5cbf8c', '#f1eee7', '#f5c36b'];
   const fire = opts => window.confetti && confetti({ disableForReducedMotion: true, colors, ...opts });
   const boxes = [...document.querySelectorAll('input[type=checkbox]')];
