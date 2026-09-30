@@ -124,8 +124,14 @@
     margin-top: 12px; padding: 10px 12px; border-left: 3px solid var(--accent);
     background: var(--accent-soft); border-radius: 6px; font-size: 14px; color: var(--ink);
   }
-  footer { margin-top: 40px; font-size: 14px; color: var(--muted); text-align: center; }
-  footer.all-done { font-size: 20px; font-weight: 600; color: var(--done); }
+  .outro {
+    min-height: 80svh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 0 16px 48px;
+    background: radial-gradient(ellipse 60% 45% at 50% 50%, var(--accent-soft), transparent 70%);
+  }
+  .outro h1 { font-size: clamp(48px, 11vw, 104px); margin: 0 0 16px; }
+  .outro p { color: var(--muted); font-size: clamp(17px, 2.5vw, 21px); margin: 0; }
+  .outro p.all-done { color: var(--done); font-weight: 600; }
   .peeker {
     position: fixed; z-index: 5; width: clamp(64px, 9vw, 120px); cursor: pointer;
     transition: transform .7s cubic-bezier(.3,1.5,.5,1);
@@ -215,8 +221,13 @@
     </li>
   </ol>
 
-  <footer class="reveal" id="footer">See you in class!</footer>
 </main>
+<footer class="outro">
+  <div class="reveal">
+    <h1><span class="shimmer">See you in class!</span></h1>
+    <p id="footer">Finish the checklist above and you're good to go.</p>
+  </div>
+</footer>
 <div class="peeker left" style="top: 28%" aria-hidden="true">
   <svg viewBox="0 0 100 110">
     <path d="M20 16 q6 -14 14 -2" stroke="#e0825f" stroke-width="5" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="60" rx="52" ry="48" fill="#e0825f"/>
@@ -312,7 +323,7 @@
     pill.textContent = finished ? '✓ Finished' : 'Finish before class';
     pill.classList.toggle('finished', finished);
     const footer = document.getElementById('footer');
-    footer.textContent = finished ? "🎉 You're all set. See you in class!" : 'See you in class!';
+    footer.textContent = finished ? "🎉 You're all set!" : "Finish the checklist above and you're good to go.";
     footer.classList.toggle('all-done', finished);
     return finished;
   }
