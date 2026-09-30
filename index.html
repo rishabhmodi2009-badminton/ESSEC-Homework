@@ -95,7 +95,7 @@
   }
   ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
   li {
-    background: radial-gradient(400px circle at var(--x, -100%) var(--y, -100%), rgba(224,130,95,.12), transparent 60%), var(--card);
+    background: var(--card);
     border: 1px solid var(--line); border-radius: 14px;
     padding: 20px; display: grid; grid-template-columns: auto 1fr; gap: 16px;
   }
@@ -288,11 +288,6 @@
     if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }), { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-  document.querySelectorAll('li').forEach(li => li.addEventListener('pointermove', e => {
-    const r = li.getBoundingClientRect();
-    li.style.setProperty('--x', `${e.clientX - r.left}px`);
-    li.style.setProperty('--y', `${e.clientY - r.top}px`);
-  }));
   const peekers = [...document.querySelectorAll('.peeker')];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const wait = ms => new Promise(r => setTimeout(r, ms));
