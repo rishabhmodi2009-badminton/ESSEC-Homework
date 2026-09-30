@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Before Our Claude Code Session</title>
-<meta name="description" content="Setup checklist for ESSEC students to complete before the Claude Code session. Takes about 20 minutes.">
+<meta name="description" content="Setup checklist for ESSEC students to complete before the Claude Code session. Takes about 45 minutes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -53,6 +53,7 @@
     background: var(--accent-soft); color: var(--accent);
     border-radius: 999px; padding: 4px 12px; font-size: 14px; font-weight: 500;
   }
+  .pill.finished { background: var(--done); color: var(--card); }
   .progress { margin-bottom: 24px; }
   .progress-label { font-size: 14px; color: var(--muted); margin-bottom: 6px; }
   .bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
@@ -91,8 +92,8 @@
   <h1>Before our Claude Code session</h1>
   <p class="lede">Claude Code is an AI assistant that works directly with the files and folders on your laptop. You don't need to be a programmer to use it, but you do need it installed and logged in before we start. Everything below is setup only, so we can spend our time together building rather than troubleshooting.</p>
   <div class="meta">
-    <span class="pill">⏱ About 20 minutes</span>
-    <span class="pill">Finish before class</span>
+    <span class="pill">⏱ About 45 minutes</span>
+    <span class="pill" id="status-pill">Finish before class</span>
   </div>
 
   <div class="progress">
@@ -107,7 +108,7 @@
         <h2>1. Get a paid Claude plan <span class="tag req">Required</span></h2>
         <p>Claude Code does not work on the free plan. The <strong>Pro plan</strong> is enough for our session: about $20 per month, or $17 per month billed annually. Max, Team, and Enterprise plans work too.</p>
         <p>If ESSEC gives you a university or team Claude account, check whether Claude Code is already enabled on it before you pay for anything yourself.</p>
-        <div class="note">Can't get a paid plan? Connect with a classmate who has one.</div>
+        <div class="note"><strong>Can't get a paid plan? Team up with a classmate who has one.</strong> This is only our second lesson, so it's a great excuse to get to know someone new. Message a classmate, agree to share their account for the session, and plan to sit together in class.</div>
         <a class="btn" href="https://claude.com/pricing" target="_blank" rel="noopener">See Claude pricing →</a>
       </div>
     </li>
@@ -137,7 +138,8 @@
     <li>
       <input type="checkbox" id="step5" aria-label="Mark step 5 done">
       <div>
-        <h2>5. Experiment with Lovable</h2>
+        <h2>5. Experiment with Lovable <span class="tag">About 25 minutes</span></h2>
+        <p>Spend some real time here. Try building a small website or app and see what Lovable can do.</p>
         <a class="btn" href="https://lovable.dev/dashboard" target="_blank" rel="noopener">Open Lovable →</a>
       </div>
     </li>
@@ -154,6 +156,10 @@
     boxes.forEach(b => b.closest('li').classList.toggle('checked', b.checked));
     document.getElementById('progress-label').textContent = `${done} of ${boxes.length} done`;
     document.getElementById('progress-bar').style.width = `${done / boxes.length * 100}%`;
+    const pill = document.getElementById('status-pill');
+    const finished = done === boxes.length;
+    pill.textContent = finished ? '✓ Finished' : 'Finish before class';
+    pill.classList.toggle('finished', finished);
   }
   boxes.forEach(b => {
     b.checked = load('essec-' + b.id) === '1';
