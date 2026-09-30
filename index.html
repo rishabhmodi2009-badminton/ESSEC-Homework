@@ -125,13 +125,11 @@
     background: var(--accent-soft); border-radius: 6px; font-size: 14px; color: var(--ink);
   }
   .outro {
-    min-height: 80svh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center; padding: 0 16px 48px;
+    min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 0 16px;
     background: radial-gradient(ellipse 60% 45% at 50% 50%, var(--accent-soft), transparent 70%);
   }
-  .outro h1 { font-size: clamp(48px, 11vw, 104px); margin: 0 0 16px; }
-  .outro p { color: var(--muted); font-size: clamp(17px, 2.5vw, 21px); margin: 0; }
-  .outro p.all-done { color: var(--done); font-weight: 600; }
+  .outro h1 { font-size: clamp(48px, 11vw, 104px); margin: 0; }
   .peeker {
     position: fixed; z-index: 5; width: clamp(64px, 9vw, 120px); cursor: pointer;
     transition: transform .7s cubic-bezier(.3,1.5,.5,1);
@@ -142,6 +140,26 @@
   .peeker.right.out { transform: translateX(42%) rotate(-8deg); }
   .peeker.duck { transition-duration: .2s; transition-timing-function: ease-in; }
   .peeker.right svg { transform: scaleX(-1); }
+  .peeker.poke { animation: squish .4s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes squish { 30% { scale: 1.15 .85; } 60% { scale: .92 1.1; } }
+  .peeker.dance { animation: dance .5s ease-in-out infinite alternate; }
+  @keyframes dance { from { rotate: -10deg; scale: 1; } to { rotate: 10deg; scale: 1.1; } }
+  .bubble {
+    position: absolute; top: -8px; width: max-content; max-width: 180px; padding: 8px 12px;
+    background: var(--ink); color: var(--bg); border-radius: 12px; font-size: 14px; font-weight: 600; line-height: 1.3;
+    opacity: 0; scale: .6; transition: opacity .2s, scale .25s cubic-bezier(.3,1.6,.5,1); pointer-events: none;
+  }
+  .bubble small { display: block; font-weight: 500; opacity: .6; font-size: 12px; margin-top: 2px; }
+  .peeker.left .bubble { left: 100%; transform-origin: left bottom; }
+  .peeker.right .bubble { right: 100%; transform-origin: right bottom; }
+  .peeker.talking .bubble { opacity: 1; scale: 1; }
+  .toast {
+    position: fixed; left: 50%; bottom: 32px; z-index: 20; translate: -50% 150%; opacity: 0;
+    background: var(--card); border: 1px solid var(--accent); color: var(--ink); border-radius: 999px;
+    padding: 12px 20px; font-weight: 600; box-shadow: 0 12px 40px -10px rgba(224,130,95,.5);
+    transition: translate .5s cubic-bezier(.3,1.5,.5,1), opacity .3s; width: max-content; max-width: calc(100% - 32px); text-align: center;
+  }
+  .toast.show { translate: -50% 0; opacity: 1; }
   .peeker svg { display: block; overflow: visible; }
   .peeker .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4s infinite; }
   .peeker:nth-of-type(2) .eyes { animation-delay: 1.3s; }
@@ -149,7 +167,7 @@
   @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
   @media (prefers-reduced-motion: reduce) {
     .peeker { transition: none; }
-    .peeker .eyes { animation: none; }
+    .peeker .eyes, .peeker.poke, .peeker.dance { animation: none; }
   }
 </style>
 <script>document.documentElement.classList.add('js')</script>
@@ -225,7 +243,6 @@
 <footer class="outro">
   <div class="reveal">
     <h1><span class="shimmer">See you in class!</span></h1>
-    <p id="footer">Finish the checklist above and you're good to go.</p>
   </div>
 </footer>
 <div class="peeker left" style="top: 28%" aria-hidden="true">
@@ -267,6 +284,7 @@
     <path d="M52 70 q6 6 12 0" stroke="#161513" stroke-width="3" fill="none" stroke-linecap="round"/>
   </svg>
 </div>
+<div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.js"></script>
 <script>
   const io = new IntersectionObserver(entries => entries.forEach(e => {
@@ -288,11 +306,48 @@
     while (true) {
       p.classList.remove('duck'); p.classList.add('out');
       await wait(rand(2500, 4500));
+      while (p.classList.contains('talking') || party) await wait(300);
       p.classList.remove('out');
       await wait(rand(4000, 9000));
     }
   });
-  peekers.forEach(p => p.addEventListener('click', () => { p.classList.add('duck'); p.classList.remove('out'); }));
+
+  const lines = ['Hey! 👋', 'Boo!', 'You found me!', 'Vibe check ✅', 'Stop poking me 😆', 'Did you finish the checklist?', 'Shh, I live here'];
+  const found = new Set();
+  let party = false;
+  peekers.forEach((p, i) => {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    p.appendChild(bubble);
+    p.addEventListener('click', async () => {
+      if (party || p.classList.contains('talking')) return;
+      found.add(i);
+      bubble.innerHTML = `${lines[Math.floor(Math.random() * lines.length)]}<small>${found.size} of ${peekers.length} friends found</small>`;
+      p.classList.remove('poke'); void p.offsetWidth; p.classList.add('poke', 'talking');
+      if (found.size === peekers.length) return startParty();
+      await wait(1800);
+      p.classList.remove('talking');
+      p.classList.add('duck'); p.classList.remove('out');
+    });
+  });
+  async function startParty() {
+    party = true;
+    await wait(900);
+    peekers.forEach(p => { p.classList.remove('talking', 'duck'); p.classList.add('out', 'dance'); });
+    const toast = document.getElementById('toast');
+    toast.textContent = "🥚 You found the secret! All 3 friends say hi and good luck!";
+    toast.classList.add('show');
+    const shapes = window.confetti && confetti.shapeFromText ? ['🥚', '🎉', '✨', '💜'].map(text => confetti.shapeFromText({ text, scalar: 2 })) : undefined;
+    for (let k = 0; k < 4; k++) {
+      fire({ particleCount: 40, spread: 100, startVelocity: 35, origin: { x: Math.random() * .6 + .2, y: .3 }, shapes, scalar: 2, flat: !!shapes });
+      await wait(450);
+    }
+    await wait(4000);
+    toast.classList.remove('show');
+    peekers.forEach(p => p.classList.remove('dance', 'out'));
+    found.clear();
+    party = false;
+  }
   let pointer = { x: innerWidth / 2, y: innerHeight / 2 };
   addEventListener('pointermove', e => { pointer = { x: e.clientX, y: e.clientY }; lookAt(); }, { passive: true });
   addEventListener('scroll', () => lookAt(), { passive: true });
@@ -322,9 +377,6 @@
     const finished = done === boxes.length;
     pill.textContent = finished ? '✓ Finished' : 'Finish before class';
     pill.classList.toggle('finished', finished);
-    const footer = document.getElementById('footer');
-    footer.textContent = finished ? "🎉 You're all set!" : "Finish the checklist above and you're good to go.";
-    footer.classList.toggle('all-done', finished);
     return finished;
   }
   boxes.forEach(b => {
