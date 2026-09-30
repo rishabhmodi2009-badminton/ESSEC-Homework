@@ -131,14 +131,25 @@
   }
   .outro h1 { font-size: clamp(48px, 11vw, 104px); margin: 0; }
   .peeker {
-    position: fixed; z-index: 5; width: clamp(64px, 9vw, 120px);
-    transition: transform .7s cubic-bezier(.3,1.5,.5,1), top .45s cubic-bezier(.3,1.4,.5,1);
+    position: fixed; z-index: 5; width: clamp(64px, 9vw, 120px); cursor: pointer;
+    transition: transform .7s cubic-bezier(.3,1.5,.5,1);
   }
   .peeker.left { left: 0; transform: translateX(-100%); }
   .peeker.right { right: 0; transform: translateX(100%); }
   .peeker.left.out { transform: translateX(-42%) rotate(8deg); }
   .peeker.right.out { transform: translateX(42%) rotate(-8deg); }
+  .peeker.duck { transition-duration: .2s; transition-timing-function: ease-in; }
   .peeker.right svg { transform: scaleX(-1); }
+  .peeker.poke { animation: squish .4s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes squish { 30% { scale: 1.15 .85; } 60% { scale: .92 1.1; } }
+  .bubble {
+    position: absolute; top: -8px; width: max-content; max-width: 180px; padding: 8px 12px;
+    background: var(--ink); color: var(--bg); border-radius: 12px; font-size: 14px; font-weight: 600; line-height: 1.3;
+    opacity: 0; scale: .6; transition: opacity .2s, scale .25s cubic-bezier(.3,1.6,.5,1); pointer-events: none;
+  }
+  .peeker.left .bubble { left: 100%; transform-origin: left bottom; }
+  .peeker.right .bubble { right: 100%; transform-origin: right bottom; }
+  .peeker.talking .bubble { opacity: 1; scale: 1; }
   .peeker svg { display: block; overflow: visible; }
   .peeker .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4s infinite; }
   .peeker:nth-of-type(2) .eyes { animation-delay: 1.3s; }
@@ -146,7 +157,7 @@
   @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
   @media (prefers-reduced-motion: reduce) {
     .peeker { transition: none; }
-    .peeker .eyes { animation: none; }
+    .peeker .eyes, .peeker.poke { animation: none; }
   }
 </style>
 <script>document.documentElement.classList.add('js')</script>
@@ -282,30 +293,30 @@
     if (reduce) { p.classList.add('out'); return; }
     await wait(1500 + i * 2200);
     while (true) {
-      p.classList.add('out');
-      dodge();
+      p.classList.remove('duck'); p.classList.add('out');
       await wait(rand(2500, 4500));
+      while (p.classList.contains('talking')) await wait(300);
       p.classList.remove('out');
       await wait(rand(4000, 9000));
     }
   });
 
-  let pointer = { x: innerWidth / 2, y: innerHeight / 2 };
-  addEventListener('pointermove', e => { pointer = { x: e.clientX, y: e.clientY }; dodge(); lookAt(); }, { passive: true });
-  function dodge() {
-    const reach = 160;
-    peekers.forEach(p => {
-      if (!p.classList.contains('out')) return;
-      const r = p.getBoundingClientRect();
-      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      if (Math.hypot(pointer.x - cx, pointer.y - cy) > reach) return;
-      const h = p.offsetHeight, min = 8, max = innerHeight - h - 8;
-      let dir = pointer.y > cy ? -1 : 1;
-      let top = pointer.y + dir * reach - h / 2;
-      if (top < min || top > max) { dir = -dir; top = pointer.y + dir * reach - h / 2; }
-      p.style.top = `${Math.min(max, Math.max(min, top))}px`;
+  const lines = ['Hey! 👋', 'Boo!', 'You found me!', 'Vibe check ✅', 'Stop poking me 😆', 'Did you finish the checklist?', 'Shh, I live here'];
+  peekers.forEach(p => {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    p.appendChild(bubble);
+    p.addEventListener('click', async () => {
+      if (p.classList.contains('talking')) return;
+      bubble.textContent = lines[Math.floor(Math.random() * lines.length)];
+      p.classList.remove('poke'); void p.offsetWidth; p.classList.add('poke', 'talking');
+      await wait(1800);
+      p.classList.remove('talking');
+      p.classList.add('duck'); p.classList.remove('out');
     });
-  }
+  });
+  let pointer = { x: innerWidth / 2, y: innerHeight / 2 };
+  addEventListener('pointermove', e => { pointer = { x: e.clientX, y: e.clientY }; lookAt(); }, { passive: true });
   addEventListener('scroll', () => lookAt(), { passive: true });
   function lookAt() {
     peekers.forEach(p => {
