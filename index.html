@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before Our Claude Code Session</title>
+<meta name="description" content="Setup checklist for ESSEC students to complete before the Claude Code session. Takes about 20 minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --card: #ffffff;
+    --ink: #1c1b19;
+    --muted: #6b675f;
+    --line: #e4e0d6;
+    --accent: #c15f3c;
+    --accent-soft: #f6e6de;
+    --done: #2f7d57;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161513;
+      --card: #201f1c;
+      --ink: #f1eee7;
+      --muted: #a39e93;
+      --line: #34322d;
+      --accent: #e0825f;
+      --accent-soft: #3a2820;
+      --done: #5cbf8c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 Inter, system-ui, sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 56px 16px 72px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1 {
+    font-family: Fraunces, Georgia, serif; font-weight: 600;
+    font-size: clamp(32px, 6vw, 46px); line-height: 1.1; margin: 8px 0 16px;
+  }
+  .lede { color: var(--muted); margin: 0 0 24px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+  .pill {
+    background: var(--accent-soft); color: var(--accent);
+    border-radius: 999px; padding: 4px 12px; font-size: 14px; font-weight: 500;
+  }
+  .progress { margin-bottom: 24px; }
+  .progress-label { font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+  .bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; background: var(--done); transition: width .25s; }
+  ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  li {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px; display: grid; grid-template-columns: auto 1fr; gap: 16px;
+    transition: opacity .2s;
+  }
+  li.checked { opacity: .6; }
+  li.checked h2 { text-decoration: line-through; }
+  input[type=checkbox] {
+    width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--done); cursor: pointer;
+  }
+  h2 { font-size: 18px; margin: 0 0 4px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+  .tag { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .tag.req { color: var(--accent); }
+  li p { margin: 6px 0 0; color: var(--muted); }
+  li p strong { color: var(--ink); }
+  a.btn {
+    display: inline-block; margin-top: 12px; padding: 8px 14px; border-radius: 8px;
+    background: var(--ink); color: var(--bg); text-decoration: none; font-weight: 500; font-size: 14px;
+  }
+  a.btn:hover { background: var(--accent); }
+  .note {
+    margin-top: 12px; padding: 10px 12px; border-left: 3px solid var(--accent);
+    background: var(--accent-soft); border-radius: 6px; font-size: 14px; color: var(--ink);
+  }
+  footer { margin-top: 40px; font-size: 14px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">ESSEC Business School</div>
+  <h1>Before our Claude Code session</h1>
+  <p class="lede">Claude Code is an AI assistant that works directly with the files and folders on your laptop. You don't need to be a programmer to use it, but you do need it installed and logged in before we start. Everything below is setup only, so we can spend our time together building rather than troubleshooting.</p>
+  <div class="meta">
+    <span class="pill">⏱ About 20 minutes</span>
+    <span class="pill">Finish before class</span>
+  </div>
+
+  <div class="progress">
+    <div class="progress-label" id="progress-label">0 of 5 done</div>
+    <div class="bar"><span id="progress-bar"></span></div>
+  </div>
+
+  <ol>
+    <li>
+      <input type="checkbox" id="step1" aria-label="Mark step 1 done">
+      <div>
+        <h2>1. Get a paid Claude plan <span class="tag req">Required</span></h2>
+        <p>Claude Code does not work on the free plan. The <strong>Pro plan</strong> is enough for our session: about $20 per month, or $17 per month billed annually. Max, Team, and Enterprise plans work too.</p>
+        <p>If ESSEC gives you a university or team Claude account, check whether Claude Code is already enabled on it before you pay for anything yourself.</p>
+        <div class="note">Can't get a paid plan? Connect with a classmate who has one.</div>
+        <a class="btn" href="https://claude.com/pricing" target="_blank" rel="noopener">See Claude pricing →</a>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" id="step2" aria-label="Mark step 2 done">
+      <div>
+        <h2>2. Install Claude Code <span class="tag">10 minutes</span></h2>
+        <p>Download Claude Code and log in with your paid Claude account.</p>
+        <div class="note">Not planning to purchase Claude Code? Please use a friend's.</div>
+        <a class="btn" href="https://claude.com/" target="_blank" rel="noopener">Go to claude.com →</a>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" id="step3" aria-label="Mark step 3 done">
+      <div>
+        <h2>3. Create a GitHub account</h2>
+        <a class="btn" href="https://github.com/" target="_blank" rel="noopener">Go to GitHub →</a>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" id="step4" aria-label="Mark step 4 done">
+      <div>
+        <h2>4. Create a Vercel account</h2>
+        <a class="btn" href="https://vercel.com/" target="_blank" rel="noopener">Go to Vercel →</a>
+      </div>
+    </li>
+    <li>
+      <input type="checkbox" id="step5" aria-label="Mark step 5 done">
+      <div>
+        <h2>5. Experiment with Lovable</h2>
+        <a class="btn" href="https://lovable.dev/dashboard" target="_blank" rel="noopener">Open Lovable →</a>
+      </div>
+    </li>
+  </ol>
+
+  <footer>See you in class!</footer>
+</main>
+<script>
+  const boxes = [...document.querySelectorAll('input[type=checkbox]')];
+  const save = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  function update() {
+    const done = boxes.filter(b => b.checked).length;
+    boxes.forEach(b => b.closest('li').classList.toggle('checked', b.checked));
+    document.getElementById('progress-label').textContent = `${done} of ${boxes.length} done`;
+    document.getElementById('progress-bar').style.width = `${done / boxes.length * 100}%`;
+  }
+  boxes.forEach(b => {
+    b.checked = load('essec-' + b.id) === '1';
+    b.addEventListener('change', () => { save('essec-' + b.id, b.checked ? '1' : '0'); update(); });
+  });
+  update();
+</script>
+</body>
+</html>
