@@ -34,6 +34,20 @@
     background: radial-gradient(ellipse 60% 45% at 50% 55%, var(--accent-soft), transparent 70%);
   }
   .hero h1 { font-size: clamp(56px, 14vw, 128px); margin: 12px 0; }
+  .shimmer {
+    background: linear-gradient(90deg, var(--ink) 0%, var(--ink) 35%, var(--accent) 50%, var(--ink) 65%, var(--ink) 100%);
+    background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 5s ease-in-out infinite;
+  }
+  @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+  .wave { display: inline-block; transform-origin: 70% 70%; animation: wave 2.4s ease-in-out infinite; }
+  @keyframes wave {
+    0%, 60%, 100% { transform: rotate(0); }
+    10%, 30% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    40% { transform: rotate(-4deg); }
+    50% { transform: rotate(10deg); }
+  }
   .hero p { color: var(--muted); font-size: clamp(17px, 2.5vw, 21px); margin: 0; }
   .scroll-cue {
     position: absolute; bottom: 32px; color: var(--muted); text-decoration: none; font-size: 14px;
@@ -53,7 +67,7 @@
   .js .reveal.in { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .js .hero > *, .scroll-cue span { animation: none; }
+    .js .hero > *, .scroll-cue span, .shimmer, .wave, .check-pop { animation: none; }
     .js .reveal { opacity: 1; transform: none; transition: none; }
   }
   main { max-width: 720px; margin: 0 auto; padding: 72px 16px; }
@@ -74,21 +88,29 @@
   .pill.finished { background: var(--done); color: var(--card); }
   .progress { margin-bottom: 24px; }
   .progress-label { font-size: 14px; color: var(--muted); margin-bottom: 6px; }
-  .bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
-  .bar span { display: block; height: 100%; width: 0; background: var(--done); transition: width .25s; }
+  .bar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; }
+  .bar span {
+    display: block; height: 100%; width: 0; border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--done)); transition: width .5s cubic-bezier(.3,1.4,.5,1);
+  }
   ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
   li {
-    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    background: radial-gradient(400px circle at var(--x, -100%) var(--y, -100%), rgba(224,130,95,.12), transparent 60%), var(--card);
+    border: 1px solid var(--line); border-radius: 14px;
     padding: 20px; display: grid; grid-template-columns: auto 1fr; gap: 16px;
-    transition: opacity .2s;
   }
-  li.checked { opacity: .6; }
+  .js li.reveal { transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1), border-color .25s; }
+  .js li.reveal.in:hover { transform: translateY(-3px); border-color: rgba(224,130,95,.5); transition: transform .25s, border-color .25s; }
+  li.checked > div { opacity: .6; }
+  .emoji { font-size: 1.1em; }
+  .check-pop { animation: pop .35s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes pop { 50% { transform: scale(1.35); } }
   li.checked h2 { text-decoration: line-through; }
   input[type=checkbox] {
     width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--done); cursor: pointer;
   }
-  h2 { font-size: 18px; margin: 0 0 4px; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
-  .tag { font-size: 12px; font-weight: 600; color: var(--muted); }
+  h2 { font-size: 18px; margin: 0 0 4px; }
+  .tag { display: inline-block; margin-left: 6px; font-size: 12px; font-weight: 600; color: var(--muted); }
   .tag.req { color: var(--accent); }
   li p { margin: 6px 0 0; color: var(--muted); }
   li p + p { margin-top: 1.6em; }
@@ -103,13 +125,14 @@
     background: var(--accent-soft); border-radius: 6px; font-size: 14px; color: var(--ink);
   }
   footer { margin-top: 40px; font-size: 14px; color: var(--muted); text-align: center; }
+  footer.all-done { font-size: 20px; font-weight: 600; color: var(--done); }
 </style>
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 <header class="hero">
   <div class="eyebrow">ESSEC Business School</div>
-  <h1>Welcome!</h1>
+  <h1><span class="shimmer">Welcome!</span> <span class="wave">👋</span></h1>
   <p>Let's get you ready for our Vibe Coding session.</p>
   <a class="scroll-cue" href="#tasks">Scroll to get started <span>↓</span></a>
 </header>
@@ -132,7 +155,7 @@
     <li class="reveal">
       <input type="checkbox" id="step1" aria-label="Mark step 1 done">
       <div>
-        <h2>1. Get a paid Claude plan <span class="tag req">Required</span></h2>
+        <h2>1. <span class="emoji">💳</span> Get a paid Claude plan <span class="tag req">Required</span></h2>
         <p>Claude Code does not work on the free plan. The <strong>Pro plan</strong> is enough for our session: about $20 per month, or $17 per month billed annually. Max, Team, and Enterprise plans work too.</p>
         <p>If ESSEC gives you a university or team Claude account, check whether Claude Code is already enabled on it before you pay for anything yourself.</p>
         <div class="note"><strong>Can't get a paid plan? Team up with a classmate who has one.</strong> This is only our second lesson, so it's a great excuse to get to know someone new. Message a classmate, agree to share their account for the session, and plan to sit together in class.</div>
@@ -142,7 +165,7 @@
     <li class="reveal">
       <input type="checkbox" id="step2" aria-label="Mark step 2 done">
       <div>
-        <h2>2. Install the Claude app <span class="tag">10 minutes</span></h2>
+        <h2>2. <span class="emoji">💻</span> Install the Claude app <span class="tag">10 minutes</span></h2>
         <p>Download the Claude app and log in with your paid Claude account.</p>
         <div class="note">Not planning to purchase Claude? Please use a friend's.</div>
         <a class="btn" href="https://claude.com/download" target="_blank" rel="noopener">Download Claude →</a>
@@ -151,50 +174,75 @@
     <li class="reveal">
       <input type="checkbox" id="step3" aria-label="Mark step 3 done">
       <div>
-        <h2>3. Create a GitHub account</h2>
+        <h2>3. <span class="emoji">🐙</span> Create a GitHub account</h2>
         <a class="btn" href="https://github.com/" target="_blank" rel="noopener">Go to GitHub →</a>
       </div>
     </li>
     <li class="reveal">
       <input type="checkbox" id="step4" aria-label="Mark step 4 done">
       <div>
-        <h2>4. Create a Vercel account</h2>
+        <h2>4. <span class="emoji">🚀</span> Create a Vercel account</h2>
         <a class="btn" href="https://vercel.com/" target="_blank" rel="noopener">Go to Vercel →</a>
       </div>
     </li>
     <li class="reveal">
       <input type="checkbox" id="step5" aria-label="Mark step 5 done">
       <div>
-        <h2>5. Experiment with Lovable <span class="tag">About 25 minutes</span></h2>
+        <h2>5. <span class="emoji">✨</span> Experiment with Lovable <span class="tag">About 25 minutes</span></h2>
         <p>This is a fun task to see the power of vibe coding: you describe what you want in plain English, and Lovable builds it for you. Spend some real time here. Try building a small website or app and see what it can do.</p>
         <a class="btn" href="https://lovable.dev/dashboard" target="_blank" rel="noopener">Open Lovable →</a>
       </div>
     </li>
   </ol>
 
-  <footer class="reveal">See you in class!</footer>
+  <footer class="reveal" id="footer">See you in class!</footer>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.js"></script>
 <script>
   const io = new IntersectionObserver(entries => entries.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
   }), { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  document.querySelectorAll('li').forEach(li => li.addEventListener('pointermove', e => {
+    const r = li.getBoundingClientRect();
+    li.style.setProperty('--x', `${e.clientX - r.left}px`);
+    li.style.setProperty('--y', `${e.clientY - r.top}px`);
+  }));
+  const cheers = ["Let's go! 🚀", 'Nice start! 🙌', 'Keep it up! 💪', 'Over halfway! 🔥', 'One more to go! 👀', "All done! You're ready 🎉"];
+  const colors = ['#e0825f', '#5cbf8c', '#f1eee7', '#f5c36b'];
+  const fire = opts => window.confetti && confetti({ disableForReducedMotion: true, colors, ...opts });
   const boxes = [...document.querySelectorAll('input[type=checkbox]')];
   const save = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   const load = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
   function update() {
     const done = boxes.filter(b => b.checked).length;
     boxes.forEach(b => b.closest('li').classList.toggle('checked', b.checked));
-    document.getElementById('progress-label').textContent = `${done} of ${boxes.length} done`;
+    document.getElementById('progress-label').textContent = `${done} of ${boxes.length} done · ${cheers[done]}`;
     document.getElementById('progress-bar').style.width = `${done / boxes.length * 100}%`;
     const pill = document.getElementById('status-pill');
     const finished = done === boxes.length;
     pill.textContent = finished ? '✓ Finished' : 'Finish before class';
     pill.classList.toggle('finished', finished);
+    const footer = document.getElementById('footer');
+    footer.textContent = finished ? "🎉 You're all set. See you in class!" : 'See you in class!';
+    footer.classList.toggle('all-done', finished);
+    return finished;
   }
   boxes.forEach(b => {
     b.checked = load('essec-' + b.id) === '1';
-    b.addEventListener('change', () => { save('essec-' + b.id, b.checked ? '1' : '0'); update(); });
+    b.addEventListener('change', () => {
+      save('essec-' + b.id, b.checked ? '1' : '0');
+      const finished = update();
+      if (!b.checked) return;
+      b.classList.remove('check-pop'); void b.offsetWidth; b.classList.add('check-pop');
+      const r = b.getBoundingClientRect();
+      const origin = { x: (r.left + r.width / 2) / innerWidth, y: (r.top + r.height / 2) / innerHeight };
+      fire({ particleCount: 30, spread: 60, startVelocity: 25, scalar: .8, ticks: 80, origin });
+      if (finished) {
+        fire({ particleCount: 120, spread: 80, origin: { x: 0, y: .7 }, angle: 60 });
+        fire({ particleCount: 120, spread: 80, origin: { x: 1, y: .7 }, angle: 120 });
+      }
+    });
   });
   update();
 </script>
