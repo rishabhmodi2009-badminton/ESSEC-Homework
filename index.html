@@ -295,7 +295,7 @@
     while (true) {
       p.classList.remove('duck'); p.classList.add('out');
       await wait(rand(2500, 4500));
-      while (p.classList.contains('talking')) await wait(300);
+      while (p.classList.contains('talking') || p.matches(':hover')) await wait(300);
       p.classList.remove('out');
       await wait(rand(4000, 9000));
     }
@@ -312,7 +312,6 @@
       p.classList.remove('poke'); void p.offsetWidth; p.classList.add('poke', 'talking');
       await wait(1800);
       p.classList.remove('talking');
-      p.classList.add('duck'); p.classList.remove('out');
     });
   });
   let pointer = { x: innerWidth / 2, y: innerHeight / 2 };
